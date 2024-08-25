@@ -1,0 +1,41 @@
+#include"STM32F407VGT6_GPIO.h"
+#define TIMER6_EN() RCC->RCC_APB1ENR|=(1<<4)
+#define SET_UIF 0x0001
+#define RESET_UIF 0xFFFE
+void delay(uint32_t delay) {
+    TIMER6_EN();  // Enable Timer 6 clock
+
+    int16_t *TIM6_CR1 = (int16_t *)0x40001000;  // Timer 6 control register 1
+    int16_t *TIM6_PSC = (int16_t *)0x40001028;  // Timer 6 prescaler
+    int16_t *TIM6_ARR = (int16_t *)0x4000102C;  // Timer 6 auto-reload register
+    int16_t *TIM6_SR  = (int16_t *)0x40001010;  // Timer 6 status register
+
+    *TIM6_CR1 &= ~(1 << 0);  // Disable Timer 6
+    *TIM6_PSC = 16000 - 1;    // Set prescaler to 16000 (1 ms delay with 16 MHz clock)
+    *TIM6_ARR = delay;       // Set auto-reload value to the desired delay
+    *TIM6_CR1 |= (1 << 0);   // Enable Timer 6
+
+    while (!(*TIM6_SR & SET_UIF));  // Wait until the Update Interrupt Flag is set
+
+    *TIM6_SR &= RESET_UIF;  // Clear the Update Interrupt Flag
+}
+int main(void)
+{
+	GPIOD_PCLK_EN();  	                                //Enabling CLOCK to the GPIO port D
+	GPIO_R *GPIOd =  GPIOD;                             //Intializing the GPIOD port
+	                            // Configure PD0-PD7 as
+    GPIOd->MODER &= ~(0xc000000);                       // Clear mode bits for PD0-PD3
+    GPIOd->MODER |=  (0x40000000);                     // Set PD15 as output mode (01)
+
+        while(1)
+        {
+        	GPIOd->ODR=0x8000;                             // Set PD15 high
+        	delay(1000);                                   // Delay for 1000 ms (1 second)
+        	GPIOd->ODR=0;                                  // Set PD15 low
+        	delay(1000);                                  // Delay for 1000 ms (1 second)
+        }
+
+	for(;;);
+}
+
+
