@@ -3,7 +3,6 @@
  * BLINK STM32F407VG Internal LEDs
  */
 #include"STM32F407VGT6_GPIO.h"
-#include"STM32F407VGT6_RCC.h"
 void delay()
 {
 volatile uint32_t count=1000000;
