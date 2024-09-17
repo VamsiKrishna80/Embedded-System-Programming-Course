@@ -44,15 +44,15 @@ int main()
 /**********************************************************************************************************/
 
     GPIO_R *gpiod = GPIOD;
-    gpiod->MODER |= 1<<31;                                                                                                                                                                                           // Alternate function mode
-    gpiod->AFR[1] |= 1<<29;                                                                                                                                                                                            // Selecting ALTERNETE FUNCTION 2 for timer4 channel 4
+    gpiod->MODER |= 1<<31;                                                                                                                                // Alternate function mode
+    gpiod->AFR[1] |= 1<<29;                                                                                                                              // Selecting ALTERNETE FUNCTION 2 for timer4 channel 4
  
 /**********************************************************************************************************/
   //                                                                 1.configuring the output pin
 /**********************************************************************************************************/
 
-     TIMER4->CCMR2 &=CC4S_OUPUTMODE;                                                                                                                                                          // select the output mode by writing the CCxS (x = channel number) bits in CCMR2 register
-    TIMER4->CCER  &=CC4P_ACTIVEHIGH;                                                                                                                                                              // select the polarity by writing CCxP bit in CCER register
+     TIMER4->CCMR2 &=CC4S_OUPUTMODE;                                                                                                                       // select the output mode by writing the CCxS (x = channel number) bits in CCMR2 register
+    TIMER4->CCER  &=CC4P_ACTIVEHIGH;                                                                                                                       // select the polarity by writing CCxP bit in CCER register
 
 /**********************************************************************************************************/
     //                                        2.select the PWM mode( PWM1 or PWM2) by writing OCxM bits in CCMRx
@@ -73,8 +73,8 @@ int main()
     //                                  3.Program the Perioed and the duty cycle respectively in ARR and CCRx Registers
 /**********************************************************************************************************/
 
-    TIMER4->PSC = 160;                                                                                                                                                                                                      // Setting internal clk source 16Mhz to 100khz each tick having 1 millisecond
-    TIMER4->ARR = period;                                                                                                                                                                                                 // total on and off time
+    TIMER4->PSC = 160;                                                                                                                             // Setting internal clk source 16Mhz to 100khz each tick having 1 millisecond
+    TIMER4->ARR = period;                                                                                                                          // total on and off time
 
 /**********************************************************************************************************/
     // 4.SET the preload bit in CCMRx register and the ARPE bit in CR1 register
@@ -92,7 +92,7 @@ int main()
 /**********************************************************************************************************/
 
     TIMER4->CR1 &=Edge_Aligned;
-    TIMER4->CR1 &= DIR_UP;                                                                                                                                                                                        //Selecting Upcounter in DIRECTION bit '0' for UPCOUNTER and '1' for DOWNCOUNTER
+    TIMER4->CR1 &= DIR_UP;                                                                                                           //Selecting Upcounter in DIRECTION bit '0' for UPCOUNTER and '1' for DOWNCOUNTER
 
 /**********************************************************************************************************/
     //6. Enable the capture compare
